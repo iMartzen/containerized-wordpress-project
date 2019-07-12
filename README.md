@@ -1,4 +1,8 @@
+
+
 # containerized-wordpress-project
+
+ -- Orginal project was for Ubuntu, this is project is for Centos. --
 
 Automagically deploy & run containerized WordPress (PHP7 FPM, Nginx, MariaDB) with Let's Encrypt HTTPS encryption using Ansible + Docker. 
 
@@ -8,9 +12,11 @@ Blog post discussion:
 * [Automated way of getting Let’s Encrypt certificates for WordPress using Docker + Ansible](http://foolcontrol.org/?p=2758)
 * [Automagically deploy & run containerized WordPress (PHP7 FPM, Nginx, MariaDB) using Ansible + Docker on AWS](http://foolcontrol.org/?p=2002)
 
+Based on this project 
+
 ## Requirements
 
-* Ubuntu Linux instance running in AWS (preferebaly new one, so new that you haven't even SSH-ed to it)
+* Centos Linux instance running in AWS (preferebaly new one, so new that you haven't even SSH-ed to it)
 * Ansible installed on (local) host you'll be running this playbook on
 * Port 80 (HTTP) and 443 (HTTPS) must be enabled
 
@@ -21,7 +27,7 @@ Once you have everything that was mentioned in "Requirements" section, this whol
 #### 1. Get source code for containerized-wordpress-proejct, i.e:
 
 ```
-git clone https://github.com/AdnanHodzic/containerized-wordpress-project.git
+git clone https://github.com/iMartzen/containerized-wordpress-project/tree/setupforcentos
 ```
 
  #### 2. Update containerized-wordpress-project/hosts inventory file with AWS instance URL or Public IP, i.e:
@@ -74,7 +80,7 @@ Only use `true` if DNS is setup and propagated for the specified domain name. In
  
 ## HowTo: run containerized-wordpress playbook in non interactive mode (parameters)?
 
-If you want to run this playbook in non interactive mode (which is enabled by default) using parametrers, you can do so by:
+If you want to run this playbook in non interactive mode (which is enabled by default) using parameters, you can do so by:
 
 ```
 ansible-playbook containerized-wordpress.yml -i hosts --extra-vars "domain=custom.domain2.com wp_version=4.9.4 wp_db_name=wpdb wp_db_tb_pre=wp_ wp_db_host=mysql wp_db_psw=change-M3"
@@ -92,30 +98,28 @@ It will create roles/ directory inside of containerized-wordpress-project/
 
 Roles it will install are:
 
-#### [AdnanHodzic.python-ubuntu-bootstrap](https://galaxy.ansible.com/AdnanHodzic/python-ubuntu-bootstrap/)
+#### [Ansible-role-python-centos-bootstrap](https://github.com/iMartzen/ansible-role-python-centos-bootstrap)
 
 This Ansible role will install Python on newly bootstrapped host. This is usually a new host which you never even SSH-ed to. In order for Ansible to work, Python must be installed (if missing).
 
-#### [AdnanHodzic.system-upgrade](https://galaxy.ansible.com/AdnanHodzic/system-upgrade/)
+#### [Ansible-role-centos-system-upgrade](https://github.com/iMartzen/ansible-role-centos-system-upgrade)
 
-This Ansible role will perform upgrade of all software packages on Ubunty host. After which it will reboot host (only if required). If reboot was performed, it'll wait until host is back-up.
+This Ansible role will perform upgrade of all software packages on Centos host. After which it will reboot host (only if required). If reboot was performed, it'll wait until host is back-up.
 
-* Update APT cache
-* Check if there are any available updates
-* Perform upgrade of all packages to the latest version (dist)
-* Check if a reboot is required, if it is reboot the host/server
-* Wait for server to come back after reboot, and report once it's back-up and running.
+  * Perform upgrade of all packages to the latest version (dist)
+  * Check if a reboot is required, if it is reboot the host/server
+  * Wait for server to come back after reboot, and report once it's back-up and running.
 
-#### [AdnanHodzic.docker-compose](https://galaxy.ansible.com/AdnanHodzic/docker-compose/)
+#### [Ansible-role-centos-docker-compose](https://github.com/iMartzen/ansible-role-centos-docker-compose-setup)
 
 This Ansible role will perform all necessary tasks to setup and run Docker and Docker Compose:
 
-* Install packages necessary for APT to use a repository over HTTPS.
-* Add and setup official Docker APT repositories.
-* Install packages needed for AUFS storage drivers.
-* Add user to Docker group.
+  * Install packages necessary for YUM
+  * Add and setup official Docker YUM repositories.
+  * Add user to Docker group.
+  * Start de Docker Daemon and enables it at start up
 
-#### [AdnanHodzic.containerized-wordpress](https://galaxy.ansible.com/AdnanHodzic/containerized-wordpress/)
+#### [AdnanHodzic.containerized-wordpress](https://github.com/AdnanHodzic/ansible-role-containerized-wordpress)
 
 This Ansible playbook will Deploy & run Docker Compose project for WordPress instance. It will also configure Let's Encrypt certificates for specified domain. It consists of 3 separate containers running:
 * WordPress (PHP7 FPM)
