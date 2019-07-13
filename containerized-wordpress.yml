@@ -58,7 +58,7 @@
       confirm: yes
 
   roles:
-  - ansible-role-centos-python-bootstrap
+  - ansible-role-python-centos-bootstrap
   - ansible-role-centos-system-upgrade
   - ansible-role-centos-docker-compose-setup
   - ansible-role-containerized-wordpress
